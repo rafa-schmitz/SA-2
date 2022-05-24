@@ -1,6 +1,6 @@
-const User = require('../../entities/User');
+const User = require("../../entities/User");
 // const express = require('express');
-const { getRepository } = require('typeorm');
+const { getRepository } = require("typeorm");
 
 // app = express();
 
@@ -15,19 +15,37 @@ const { getRepository } = require('typeorm');
 
 module.exports = {
   async postUser(req, res) {
-    const {} = req.body;
+    const { USERNAME, EMAIL, PASSWORD_U, TYPE_U } = req.body;
     let user = getRepository(User);
 
-    const response = await user.save(req.body);
-    
+    const response = await user.insert({ USERNAME, EMAIL, PASSWORD_U, TYPE_U });
+
     try {
       return res.status(200).json({
         dados: response
-      })
+      });
     } catch (err) {
       return res.status(400).json({
-        erro: 'deu ruim pai'
-      })
+        erro: "bad request",
+      });
     }
-  }
-}
+  },
+
+  async getUsers(req, res) {
+    let users = getRepository(User);
+
+    const response = await users.find();
+
+    try {
+      return res.status(200).json({
+        dados: response
+      });
+    } catch (err) {
+      return res.status(400).json({
+        error: res.error,
+      });
+    }
+  },
+
+  
+};

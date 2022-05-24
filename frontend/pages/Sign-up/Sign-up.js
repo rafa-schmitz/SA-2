@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, StatusBar } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Formik } from "formik";
+import api from "../../services/api";
 
 import {
   StyledContainer,
@@ -25,7 +26,42 @@ import {
 } from "./styles";
 
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState(null);
+  const [status, setStatus] = useState({
+    type: "",
+    msg: "",
+  });
+
+  const handleSignUp = async () => {
+    try {
+      setLoading(true);
+
+      const signUp = await api.post("/user", {
+        hidePassword,
+        username,
+        email,
+        password,
+        userType,
+      });
+
+      setStatus({
+        type: "success",
+        msg: "User created successfully!"
+      });
+
+      Keyboard.dismiss();
+      setLoading(false);
+      // return setTimeout(() => navigation.navigate("Login"), 3000)
+
+    } catch (err) {
+      console.log({ err });
+    }
+  };
 
   return (
     <StyledContainer>
@@ -37,13 +73,18 @@ const SignUp = () => {
 
           <Formik
             initialValues={{
-              name: "",
+              username: "",
               email: "",
               password: "",
-              confirmPassword: "",
+              userType: "",
             }}
             onSubmit={(values) => {
               console.log(values);
+
+              setUsername("");
+              setEmail("");
+              setPassword("");
+              setUserType("");
             }}
           >
             {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -53,9 +94,9 @@ const SignUp = () => {
                   icon=""
                   placeholder="Leroy Jenkins"
                   placeholderTextColor="#000"
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  value={values.name}
+                  onChangeText={handleChange("username")}
+                  onBlur={handleBlur("username")}
+                  value={(values.username, username)}
                 />
 
                 <TextInput
@@ -65,7 +106,7 @@ const SignUp = () => {
                   placeholderTextColor="#000"
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
-                  value={values.email}
+                  value={(values.email, email)}
                   keyboardType="email-address"
                 />
 
@@ -76,7 +117,7 @@ const SignUp = () => {
                   placeholderTextColor="#000"
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
-                  value={values.password}
+                  value={(values.password, password)}
                   secureTextEntry={hidePassword}
                   isPassword={true}
                   hidePassword={hidePassword}
@@ -84,24 +125,22 @@ const SignUp = () => {
                 />
 
                 <TextInput
-                  label="Confirm Password"
+                  label="Are you a Master or a Player"
                   icon=""
                   placeholder="* * * * * * * * * * * * * * *"
                   placeholderTextColor="#000"
                   onChangeText={handleChange("confirmPassword")}
                   onBlur={handleBlur("confirmPassword")}
-                  value={values.confirmPassword}
-                  secureTextEntry={hidePassword}
-                  isPassword={true}
-                  hidePassword={hidePassword}
-                  setHidePassword={setHidePassword}
+                  value={(values.userType, userType)}
                 />
 
-                {/* <MessageBox>...</MessageBox> */}
+                <MessageBox>
+                  {status.msg}
+                </MessageBox>
 
                 <Line />
 
-                <SignUpButon onPress={handleSubmit}>
+                <SignUpButon onPress={handleSignUp}>
                   <ButtonText>Sign up!</ButtonText>
                 </SignUpButon>
 
@@ -118,7 +157,14 @@ const SignUp = () => {
   );
 };
 
-const TextInput = ({ label, icon, isPassword, hidePassword, setHidePassword, ...props }) => {
+const TextInput = ({
+  label,
+  icon,
+  isPassword,
+  hidePassword,
+  setHidePassword,
+  ...props
+}) => {
   return (
     <View>
       <LeftIcon></LeftIcon>
