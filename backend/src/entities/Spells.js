@@ -22,7 +22,7 @@ module.exports = new EntitySchema({
       primary: true,
     },
 
-    SPELL: {
+    SPELLNAME: {
       type: "varchar",
     },
     SPELLDESCRIPTION: {
