@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, StatusBar } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import { View, StatusBar, Switch } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Icon2 from "react-native-vector-icons/SimpleLineIcons";
 import { Formik } from "formik";
-import api from "../../services/api";
+import api from "../../services/Api";
 
 import {
   StyledContainer,
@@ -25,39 +26,41 @@ import {
   SignUpLink,
 } from "./styles";
 
-const SignUp = () => {
+const SignUp = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState(null);
+  const [USERNAME, setUsername] = useState("");
+  const [EMAIL, setEmail] = useState("");
+  const [PASSWORD_U, setPassword] = useState("");
+  const [TYPE_U, setUserType] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
   const [status, setStatus] = useState({
     type: "",
     msg: "",
   });
 
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+    setUserType((previousState) => !previousState);
+  };
+
   const handleSignUp = async () => {
     try {
-      setLoading(true);
-
-      const signUp = await api.post("/user", {
-        hidePassword,
-        username,
-        email,
-        password,
-        userType,
+      const signUp = await api.post("/signup", {
+        USERNAME,
+        EMAIL,
+        PASSWORD_U,
+        TYPE_U,
       });
 
       setStatus({
         type: "success",
-        msg: "User created successfully!"
+        msg: "User created successfully!",
       });
 
       Keyboard.dismiss();
       setLoading(false);
       // return setTimeout(() => navigation.navigate("Login"), 3000)
-
     } catch (err) {
       console.log({ err });
     }
@@ -90,53 +93,53 @@ const SignUp = () => {
             {({ handleChange, handleBlur, handleSubmit, values }) => (
               <StyledFormContainer>
                 <TextInput
-                  label="Enter your name"
-                  icon=""
+                  label="Enter your username"
+                  icon="user"
                   placeholder="Leroy Jenkins"
                   placeholderTextColor="#000"
-                  onChangeText={handleChange("username")}
+                  onChangeText={(e) => setUsername(e)}
                   onBlur={handleBlur("username")}
-                  value={(values.username, username)}
+                  value={USERNAME}
                 />
 
                 <TextInput
                   label="Email Address"
-                  icon=""
+                  icon="envelope"
                   placeholder="your-email@gmail.com"
                   placeholderTextColor="#000"
-                  onChangeText={handleChange("email")}
+                  onChangeText={(e) => setEmail(e)}
                   onBlur={handleBlur("email")}
-                  value={(values.email, email)}
+                  value={EMAIL}
                   keyboardType="email-address"
                 />
 
                 <TextInput
                   label="Password"
-                  icon=""
+                  icon="lock"
                   placeholder="* * * * * * * * * * * * * * *"
                   placeholderTextColor="#000"
-                  onChangeText={handleChange("password")}
+                  onChangeText={(e) => setPassword(e)}
                   onBlur={handleBlur("password")}
-                  value={(values.password, password)}
+                  value={PASSWORD_U}
                   secureTextEntry={hidePassword}
                   isPassword={true}
                   hidePassword={hidePassword}
                   setHidePassword={setHidePassword}
                 />
 
-                <TextInput
-                  label="Are you a Master or a Player"
-                  icon=""
-                  placeholder="* * * * * * * * * * * * * * *"
-                  placeholderTextColor="#000"
-                  onChangeText={handleChange("confirmPassword")}
-                  onBlur={handleBlur("confirmPassword")}
-                  value={(values.userType, userType)}
-                />
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Switch
+                    trackColor={{ false: "#767577", true: "#81b0ff" }}
+                    thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
+                  />
+                </View>
 
-                <MessageBox>
-                  {status.msg}
-                </MessageBox>
+                <MessageBox>{status.msg}</MessageBox>
 
                 <Line />
 
@@ -146,7 +149,9 @@ const SignUp = () => {
 
                 <SignUpView>
                   <SignUpText>Already have an account? </SignUpText>
-                  <SignUpLink>Login!</SignUpLink>
+                  <SignUpLink onPress={() => navigation.navigate("Login")}>
+                    Login!
+                  </SignUpLink>
                 </SignUpView>
               </StyledFormContainer>
             )}
@@ -157,6 +162,8 @@ const SignUp = () => {
   );
 };
 
+
+// input modular
 const TextInput = ({
   label,
   icon,
@@ -167,14 +174,17 @@ const TextInput = ({
 }) => {
   return (
     <View>
-      <LeftIcon></LeftIcon>
+      <LeftIcon>
+        <Icon2 name={icon} size={20} color={"#000"} />
+      </LeftIcon>
+
       <StyledInputLabel>{label}</StyledInputLabel>
       <StyledTextInput {...props} />
 
       {isPassword && (
         <RightIcon onPress={() => setHidePassword(!hidePassword)}>
           <Icon
-            name={hidePassword ? "ios-eye-outline" : "ios-eye-off-outline"}
+            name={hidePassword ? "eye-slash" : "eye"}
             size={20}
             color="#000"
           ></Icon>
