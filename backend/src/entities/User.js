@@ -29,7 +29,8 @@ module.exports = new EntitySchema({
       nullable: false
     },
     TYPE_U: {
-      type: "boolean"
+      type: "boolean",
+      nullable: true
     },
   },
 });
