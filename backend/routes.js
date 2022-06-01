@@ -1,5 +1,10 @@
 const express = require('express');
 const routes = express.Router();
+const userController = require('./src/database/controllers/User');
+
+routes.post("/signup", userController.postUser);
+routes.post("/login", userController.userLogin);
+routes.get("/user", userController.getUsers);
 const postUser = require('./src/database/controllers/User');
 const getSheet = require('./src/database/controllers/Sheet_C');
 const postSheet = require('./src/database/controllers/Sheet_C');

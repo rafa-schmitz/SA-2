@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { View, StatusBar } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import { View, StatusBar, Keyboard } from "react-native";
 import { Formik } from "formik";
+import api from "../../services/Api";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Icon2 from "react-native-vector-icons/SimpleLineIcons";
+import { useCabecaMole } from "../../context/context";
 
 import {
   StyledContainer,
@@ -24,8 +27,44 @@ import {
   SignUpLink,
 } from "./styles";
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
+  const { user, setUser } = useCabecaMole();
   const [hidePassword, setHidePassword] = useState(true);
+  const [EMAIL, setEmail] = useState("");
+  const [PASSWORD_U, setPassword] = useState("");
+  const [status, setStatus] = useState({
+    type: "",
+    msg: "",
+  });
+
+  const handleLogin = async () => {
+    try {
+      const signIn = await api.post("/login", {
+        EMAIL,
+        PASSWORD_U,
+      });
+
+      setStatus({
+        type: "success",
+        msg: "Success! Redirecting you to Home...",
+      });
+
+      setUser({
+        id: signIn.data.dados.IDUSER,
+        username: signIn.data.dados.USERNAME,
+        email: signIn.data.dados.EMAIL,
+        user_type: signIn.data.dados.TYPE_U,
+      });
+
+      Keyboard.dismiss();
+      return setTimeout(() => navigation.navigate("Home"), 2000);
+    } catch ({ ...err }) {
+      setStatus({
+        type: "error",
+        msg: "Login failed! Please try again",
+      });
+    }
+  };
 
   return (
     <StyledContainer>
@@ -37,10 +76,8 @@ const Login = ({navigation}) => {
 
           <Formik
             initialValues={{
-              name: "",
               email: "",
               password: "",
-              confirmPassword: "",
             }}
             onSubmit={(values) => {
               console.log(values);
@@ -48,37 +85,36 @@ const Login = ({navigation}) => {
           >
             {({ handleChange, handleBlur, handleSubmit, values }) => (
               <StyledFormContainer>
-                
                 <TextInput
                   label="Email Address"
-                  icon=""
+                  icon="envelope"
                   placeholder="your-email@gmail.com"
                   placeholderTextColor="#000"
-                  onChangeText={handleChange("email")}
+                  onChangeText={(e) => setEmail(e)}
                   onBlur={handleBlur("email")}
-                  value={values.email}
+                  value={EMAIL}
                   keyboardType="email-address"
                 />
 
                 <TextInput
                   label="Password"
-                  icon=""
+                  icon="lock"
                   placeholder="* * * * * * * * * * * * * * *"
                   placeholderTextColor="#000"
-                  onChangeText={handleChange("password")}
+                  onChangeText={(e) => setPassword(e)}
                   onBlur={handleBlur("password")}
-                  value={values.password}
+                  value={PASSWORD_U}
                   secureTextEntry={hidePassword}
                   isPassword={true}
                   hidePassword={hidePassword}
                   setHidePassword={setHidePassword}
                 />
 
-                {/* <MessageBox>...</MessageBox> */}
+                <MessageBox>{status.msg}</MessageBox>
 
                 <Line />
 
-                <SignUpButon onPress={handleSubmit}>
+                <SignUpButon onPress={handleLogin}>
                   <ButtonText>Login</ButtonText>
                 </SignUpButon>
 
@@ -88,9 +124,7 @@ const Login = ({navigation}) => {
                   <SignUpRedirect onPress={() => navigation.navigate("SignUp")}>
                     <SignUpLink>Sign up!</SignUpLink>
                   </SignUpRedirect>
-
                 </SignUpView>
-
               </StyledFormContainer>
             )}
           </Formik>
@@ -100,17 +134,26 @@ const Login = ({navigation}) => {
   );
 };
 
-const TextInput = ({ label, icon, isPassword, hidePassword, setHidePassword, ...props }) => {
+const TextInput = ({
+  label,
+  icon,
+  isPassword,
+  hidePassword,
+  setHidePassword,
+  ...props
+}) => {
   return (
     <View>
-      <LeftIcon></LeftIcon>
+      <LeftIcon>
+      <Icon2 name={icon} size={20} color={"#000"} />
+      </LeftIcon>
       <StyledInputLabel>{label}</StyledInputLabel>
       <StyledTextInput {...props} />
 
       {isPassword && (
         <RightIcon onPress={() => setHidePassword(!hidePassword)}>
           <Icon
-            name={hidePassword ? "ios-eye-outline" : "ios-eye-off-outline"}
+            name={hidePassword ? "eye-slash" : "eye"}
             size={20}
             color="#000"
           ></Icon>
