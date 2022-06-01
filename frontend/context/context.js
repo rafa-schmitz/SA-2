@@ -12,7 +12,7 @@ export default function ContextProvider({ children }) {
   );
 }
 
-export function useCabecaMole() {
+export function useUserContext() {
   const context = useContext(UserContext);
 
   const { user, setUser } = context;

@@ -3,12 +3,13 @@ import { View, Text, Image, ImageBackground, TextInput, TouchableOpacity } from 
 
 export const StyledContainer = styled.View`
   flex: 1;
-  background: #000000;
+  background: #1a1a1a;
 `;
 
 export const InnerContainer = styled.View`
   flex: 1;
   width: 100%;
+  justify-content: center;
   align-items: center;
 `;
 
@@ -26,14 +27,14 @@ export const PageTitle = styled.Text`
   font-size: 30px;
   text-align: center;
   font-weight: bold;
-  color: #fff;
+  color: #5E5E5E;
   padding: 10px;
 `;
 
 export const Subtitle = styled.Text`
   font-size: 18px;
   font-weight: bold;
-  color: #fff;
+  color: #5E5E5E;
   margin-bottom: 20px;
 `;
 
@@ -52,28 +53,29 @@ export const StyledTextInput = styled.TextInput `
 `;
 
 export const StyledInputLabel = styled.Text `
-  color: white;
+  color: #5E5E5E;
   font-size: 13px;
   text-align: left;
+  margin-bottom: 10px;
 `;
 
 export const LeftIcon = styled.View `
   position: absolute;
-  top: 38px;
-  left: 15px;
+  top: 50%;
+  left: 5%;
   z-index: 1;
 `;
 
 export const RightIcon = styled.TouchableOpacity `
   position: absolute;
-  top: 38px;
-  right: 15px;
+  top: 50%;
+  right: 5%;
   z-index: 1;
 `;
 
 export const SignUpButon = styled.TouchableOpacity `
   padding: 15px;
-  background-color: #C5C5C5;
+  background-color: #2C877E;
   justify-content: center;
   align-items: center;
   border-radius: 5px;
@@ -93,7 +95,7 @@ export const MessageBox = styled.Text `
 export const Line = styled.View `
   height: 1px;
   width: 100%;
-  background-color: white;
+  border: solid 1px #5E5E5E;
   margin: 20px auto;
 `;
 
@@ -107,7 +109,7 @@ export const SignUpView = styled.View `
 export const SignUpText = styled.Text `
   justify-content: center;
   align-items: center;
-  color: white;
+  color: #5E5E5E;
   font-size: 15px;
 `;
 
@@ -117,7 +119,7 @@ export const SignUpRedirect = styled.View `
 `;
 
 export const SignUpLink = styled.Text `
-  color: blueviolet;
+  color: #2C877E;
   font-size: 15px;
   text-decoration: underline;
 `;

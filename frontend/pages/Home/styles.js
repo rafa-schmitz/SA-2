@@ -1,21 +1,23 @@
 import styled from "styled-components";
-import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, Image, ImageBackground, TextInput, TouchableOpacity } from "react-native";
 
 export const StyledContainer = styled.View`
   flex: 1;
+  justify-content: center;
+  align-content: center;
   background-color: #000000;
 `;
 
 export const InnerContainer = styled.View`
   flex: 1;
   width: 100%;
+  justify-content: center;
   align-items: center;
 `;
 
-export const PageBackground = styled.Image`
+export const PageBackground = styled.ImageBackground`
   width: 100%;
   height: 100%;
-  opacity: 0.4;
 `;
 
 export const PageLogo = styled.Image`
@@ -72,7 +74,7 @@ export const RightIcon = styled.TouchableOpacity `
   z-index: 1;
 `;
 
-export const StyledButton = styled.TouchableOpacity `
+export const SignUpButon = styled.TouchableOpacity `
   padding: 15px;
   background-color: white;
   justify-content: center;
@@ -112,7 +114,7 @@ export const SignUpText = styled.Text `
   font-size: 15px;
 `;
 
-export const SignUpRedirect = styled.View `
+export const SignUpRedirect = styled.TouchableOpacity `
   justify-content: center;
   align-items: center;
 `;

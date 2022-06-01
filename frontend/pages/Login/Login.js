@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StatusBar, Keyboard } from "react-native";
 import { Formik } from "formik";
 import api from "../../services/Api";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/SimpleLineIcons";
-import { useCabecaMole } from "../../context/context";
+import { useUserContext } from "../../context/context";
 
 import {
   StyledContainer,
@@ -16,7 +16,7 @@ import {
   LeftIcon,
   StyledInputLabel,
   StyledTextInput,
-  SignUpButon,
+  LoginButon,
   ButtonText,
   RightIcon,
   MessageBox,
@@ -28,19 +28,26 @@ import {
 } from "./styles";
 
 const Login = ({ navigation }) => {
-  const { user, setUser } = useCabecaMole();
+  const { user, setUser } = useUserContext();
   const [hidePassword, setHidePassword] = useState(true);
-  const [EMAIL, setEmail] = useState("");
+  const [USERNAME, setUsername] = useState("");
   const [PASSWORD_U, setPassword] = useState("");
   const [status, setStatus] = useState({
     type: "",
     msg: "",
   });
 
+  useEffect(() => {
+    setStatus({
+      type: "clear",
+      msg: "",
+    });
+  }, []);
+
   const handleLogin = async () => {
     try {
       const signIn = await api.post("/login", {
-        EMAIL,
+        USERNAME,
         PASSWORD_U,
       });
 
@@ -48,6 +55,9 @@ const Login = ({ navigation }) => {
         type: "success",
         msg: "Success! Redirecting you to Home...",
       });
+
+      setUsername("");
+      setPassword("");
 
       setUser({
         id: signIn.data.dados.IDUSER,
@@ -59,17 +69,23 @@ const Login = ({ navigation }) => {
       Keyboard.dismiss();
       return setTimeout(() => navigation.navigate("Home"), 2000);
     } catch ({ ...err }) {
-      setStatus({
-        type: "error",
-        msg: "Login failed! Please try again",
-      });
+      if (USERNAME === '' || EMAIL === '' || PASSWORD_U === '') {
+        setStatus({
+          type: "error",
+          msg: "Você precisa preencher todos os campos!",
+        });
+      } else {
+        setStatus({
+          type: "error",
+          msg: "Erro! Usuário ou e-mail já cadastrados",
+        });
+      }
     }
   };
 
   return (
     <StyledContainer>
       <StatusBar barStyle="dark" />
-      <PageBackground source={require("../../assets/images/welcome.jpg")}>
         <InnerContainer>
           <PageTitle>D&D Sheets App</PageTitle>
           <Subtitle>Access your account</Subtitle>
@@ -83,24 +99,24 @@ const Login = ({ navigation }) => {
               console.log(values);
             }}
           >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
+            {({ handleBlur }) => (
               <StyledFormContainer>
                 <TextInput
-                  label="Email Address"
+                  label="Usuário"
                   icon="envelope"
                   placeholder="your-email@gmail.com"
-                  placeholderTextColor="#000"
-                  onChangeText={(e) => setEmail(e)}
+                  placeholderTextColor="#5E5E5E"
+                  onChangeText={(e) => setUsername(e)}
                   onBlur={handleBlur("email")}
-                  value={EMAIL}
+                  value={USERNAME}
                   keyboardType="email-address"
                 />
 
                 <TextInput
-                  label="Password"
+                  label="Senha"
                   icon="lock"
-                  placeholder="* * * * * * * * * * * * * * *"
-                  placeholderTextColor="#000"
+                  placeholder="* * * * * * * *"
+                  placeholderTextColor="#5E5E5E"
                   onChangeText={(e) => setPassword(e)}
                   onBlur={handleBlur("password")}
                   value={PASSWORD_U}
@@ -110,26 +126,36 @@ const Login = ({ navigation }) => {
                   setHidePassword={setHidePassword}
                 />
 
-                <MessageBox>{status.msg}</MessageBox>
+                <MessageBox
+                  style={{
+                    justifyContent: "space-evenly",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    marginTop: "5%",
+                    color: "#B756C9",
+                    fontSize: 16,
+                  }}
+                >
+                  {status.msg}
+                  </MessageBox>
 
                 <Line />
 
-                <SignUpButon onPress={handleLogin}>
+                <LoginButon onPress={handleLogin}>
                   <ButtonText>Login</ButtonText>
-                </SignUpButon>
+                </LoginButon>
 
                 <SignUpView>
-                  <SignUpText>Don't have an account? </SignUpText>
+                  <SignUpText>Ainda não tem uma conta? </SignUpText>
 
                   <SignUpRedirect onPress={() => navigation.navigate("SignUp")}>
-                    <SignUpLink>Sign up!</SignUpLink>
+                    <SignUpLink>Cadastre-se!</SignUpLink>
                   </SignUpRedirect>
                 </SignUpView>
               </StyledFormContainer>
             )}
           </Formik>
         </InnerContainer>
-      </PageBackground>
     </StyledContainer>
   );
 };
