@@ -60,12 +60,14 @@ const Login = ({ navigation }) => {
       setPassword("");
 
       setUser({
-        id: signIn.data.dados.IDUSER,
-        username: signIn.data.dados.USERNAME,
-        email: signIn.data.dados.EMAIL,
-        user_type: signIn.data.dados.TYPE_U,
+        id: signIn.data.dados[0].IDUSER,
+        username: signIn.data.dados[0].USERNAME,
+        email: signIn.data.dados[0].EMAIL,
+        user_type: signIn.data.dados[0].TYPE_U,
       });
 
+      console.log(user.username);
+      
       Keyboard.dismiss();
       return setTimeout(() => navigation.navigate("Home"), 2000);
     } catch ({ ...err }) {

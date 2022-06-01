@@ -15,22 +15,21 @@ import {
 } from "./styles";
 
 const Home = () => {
+  const { user } = useUserContext();
 
   useEffect(()=> {
-
+    console.log(user);
   }, [])
 
   return (
     <StyledContainer>
       <StatusBar barStyle="dark" />
-      {/* <PageBackground source={require("../../assets/images/welcome.jpg")}> */}
         <InnerContainer>
+          <PageTitle>Olá, {user.username}!</PageTitle>
           <Subtitle>doidera</Subtitle>
         </InnerContainer>
-      {/* </PageBackground> */}
     </StyledContainer>
   );
 };
-
 
 export default Home;
