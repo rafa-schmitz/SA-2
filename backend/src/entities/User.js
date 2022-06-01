@@ -24,6 +24,10 @@ module.exports = new EntitySchema({
       type: "varchar",
       nullable: false
     },
+    EMAIL: {
+      type: "varchar",
+      nullable: false
+    },
     PASSWORD_U: {
       type: "varchar",
       nullable: false

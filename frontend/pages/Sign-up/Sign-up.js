@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StatusBar, Switch } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StatusBar, Switch, Keyboard, Text } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/SimpleLineIcons";
 import { Formik } from "formik";
@@ -39,6 +39,14 @@ const SignUp = ({ navigation }) => {
     msg: "",
   });
 
+  useEffect(() => {
+    setStatus({
+      type: "clear",
+      msg: "",
+    });
+
+  }, []);
+
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
     setUserType((previousState) => !previousState);
@@ -55,113 +63,149 @@ const SignUp = ({ navigation }) => {
 
       setStatus({
         type: "success",
-        msg: "User created successfully!",
+        msg: "Usuário criado com sucesso!\nRedirecionando você para o login...",
       });
+
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setUserType("");
 
       Keyboard.dismiss();
       setLoading(false);
-      // return setTimeout(() => navigation.navigate("Login"), 3000)
+      return setTimeout(() => navigation.navigate("Login"), 3000);
     } catch (err) {
-      console.log({ err });
+      if (USERNAME === "" || EMAIL === "" || PASSWORD_U === "") {
+        setStatus({
+          type: "error",
+          msg: "Você precisa preencher todos os campos!",
+        });
+      } else {
+        setStatus({
+          type: "error",
+          msg: "Erro! Usuário ou e-mail já cadastrados",
+        });
+      }
     }
   };
 
   return (
     <StyledContainer>
       <StatusBar barStyle="dark" />
-      <PageBackground source={require("../../assets/images/welcome.jpg")}>
-        <InnerContainer>
-          <PageTitle>D&D Sheets App</PageTitle>
-          <Subtitle>Create your account</Subtitle>
+      <InnerContainer>
+        <PageTitle>D&D Sheets App</PageTitle>
+        <Subtitle>Create your account</Subtitle>
 
-          <Formik
-            initialValues={{
-              username: "",
-              email: "",
-              password: "",
-              userType: "",
-            }}
-            onSubmit={(values) => {
-              console.log(values);
+        <Formik
+          initialValues={{
+            username: "",
+            email: "",
+            password: "",
+            userType: "",
+          }}>
+          {({ handleBlur }) => (
+            <StyledFormContainer>
+              <TextInput
+                label="Escolha seu usuário"
+                icon="user"
+                placeholder="Leroy Jenkins"
+                placeholderTextColor="#5E5E5E"
+                onChangeText={(e) => setUsername(e)}
+                onBlur={handleBlur("username")}
+                value={USERNAME}
+              />
 
-              setUsername("");
-              setEmail("");
-              setPassword("");
-              setUserType("");
-            }}
-          >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
-              <StyledFormContainer>
-                <TextInput
-                  label="Enter your username"
-                  icon="user"
-                  placeholder="Leroy Jenkins"
-                  placeholderTextColor="#000"
-                  onChangeText={(e) => setUsername(e)}
-                  onBlur={handleBlur("username")}
-                  value={USERNAME}
-                />
+              <TextInput
+                label="Preencha com o seu e-mail"
+                icon="envelope"
+                placeholder="your-email@gmail.com"
+                placeholderTextColor="#5E5E5E"
+                onChangeText={(e) => setEmail(e)}
+                onBlur={handleBlur("email")}
+                value={EMAIL}
+                keyboardType="email-address"
+              />
 
-                <TextInput
-                  label="Email Address"
-                  icon="envelope"
-                  placeholder="your-email@gmail.com"
-                  placeholderTextColor="#000"
-                  onChangeText={(e) => setEmail(e)}
-                  onBlur={handleBlur("email")}
-                  value={EMAIL}
-                  keyboardType="email-address"
-                />
+              <TextInput
+                label="Crie uma senha"
+                icon="lock"
+                placeholder="* * * * * * * *"
+                placeholderTextColor="#5E5E5E"
+                onChangeText={(e) => setPassword(e)}
+                onBlur={handleBlur("password")}
+                value={PASSWORD_U}
+                secureTextEntry={hidePassword}
+                isPassword={true}
+                hidePassword={hidePassword}
+                setHidePassword={setHidePassword}
+              />
 
-                <TextInput
-                  label="Password"
-                  icon="lock"
-                  placeholder="* * * * * * * * * * * * * * *"
-                  placeholderTextColor="#000"
-                  onChangeText={(e) => setPassword(e)}
-                  onBlur={handleBlur("password")}
-                  value={PASSWORD_U}
-                  secureTextEntry={hidePassword}
-                  isPassword={true}
-                  hidePassword={hidePassword}
-                  setHidePassword={setHidePassword}
-                />
-
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
+              <View
+                style={{
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  marginTop: "5%",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#5E5E5E",
+                    fontSize: 20,
+                  }}
                 >
-                  <Switch
-                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                    thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
-                  />
-                </View>
+                  Player!
+                </Text>
+                <Switch
+                  trackColor={{ false: "#2C877E", true: "#B756C9" }}
+                  thumbColor={isEnabled ? "#B756C9" : "#2C877E"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
+                />
 
-                <MessageBox>{status.msg}</MessageBox>
+                <Text
+                  style={{
+                    color: "#5E5E5E",
+                    fontSize: 20,
+                  }}
+                >
+                  Master!
+                </Text>
+              </View>
 
-                <Line />
+              <MessageBox
+                style={{
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  marginTop: "5%",
+                  color: "#B756C9",
+                  fontSize: 16,
+                }}
+              >
+                {status.msg}
+              </MessageBox>
 
-                <SignUpButon onPress={handleSignUp}>
-                  <ButtonText>Sign up!</ButtonText>
-                </SignUpButon>
+              <Line />
 
-                <SignUpView>
-                  <SignUpText>Already have an account? </SignUpText>
-                  <SignUpLink onPress={() => navigation.navigate("Login")}>
-                    Login!
-                  </SignUpLink>
-                </SignUpView>
-              </StyledFormContainer>
-            )}
-          </Formik>
-        </InnerContainer>
-      </PageBackground>
+              <SignUpButon onPress={handleSignUp}>
+                <ButtonText>Cadastrar</ButtonText>
+              </SignUpButon>
+
+              <SignUpView>
+                <SignUpText>Já tem uma conta? </SignUpText>
+                <SignUpLink onPress={() => navigation.navigate("Login")}>
+                  Login!
+                </SignUpLink>
+              </SignUpView>
+            </StyledFormContainer>
+          )}
+        </Formik>
+      </InnerContainer>
     </StyledContainer>
   );
 };
-
 
 // input modular
 const TextInput = ({

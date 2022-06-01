@@ -4,48 +4,48 @@ const { getRepository } = require("typeorm");
 
 module.exports = {
   async postUser(req, res) {
-
     const schema = Yup.object().shape({
       USERNAME: Yup.string()
-        .required("A username is required!")
-        .min(3, "Erro: Campo nome precisa ter pelo menos 3 caracteres!"),
+        .required("A username is required!"),
       EMAIL: Yup.string()
         .required("An e-mail address is required!")
         .email("Please enter a valid e-mail"),
       PASSWORD_U: Yup.string()
         .required("A password is required!")
-        .min(6, "Erro: Campo senha precisa ter pelo menos 6 caracteres!"),
     });
-
-    await schema.validate(req.body);
-
-    const { USERNAME, EMAIL, PASSWORD_U, TYPE_U } = req.body;
-    let user = getRepository(User);
-    const response = await user.insert({ USERNAME, EMAIL, PASSWORD_U, TYPE_U });
-
-    const userValidation = await user.findAll({
-      where: {
-        USERNAME,
-        EMAIL
-      }
-    });
-
-    console.log(userValidation);
-
-    if (userValidation === null) {
-      return res.status(400).json({
-        error: true,
-        msg: EMAIL,
-      });
-    }
 
     try {
+      await schema.validate(req.body);
+
+      const { USERNAME, EMAIL, PASSWORD_U, TYPE_U } = req.body;
+      let user = getRepository(User);
+
+      const userValidation = await user.find({
+        where: [{ USERNAME: USERNAME }, { EMAIL: EMAIL }],
+      });
+
+      console.log(userValidation);
+
+      if (userValidation[0]) {
+        return res.status(400).json({
+          error: true,
+          msg: res.err,
+        });
+      }
+
+      const response = await user.insert({
+        USERNAME,
+        EMAIL,
+        PASSWORD_U,
+        TYPE_U,
+      });
+
       return res.status(200).json({
         dados: response,
       });
     } catch (err) {
       return res.status(400).json({
-        error: "bad request",
+        error: {msg: "Este usuário e/ou email já existe"},
       });
     }
   },
@@ -67,24 +67,32 @@ module.exports = {
   },
 
   async userLogin(req, res) {
+    const schema = Yup.object().shape({
+      USERNAME: Yup.string().required("A username is required!"),
+      PASSWORD_U: Yup.string().required("A password is required!"),
+    });
     try {
-      const { EMAIL, PASSWORD_U } = req.body;
+      await schema.validate(req.body);
+
+      const { USERNAME, PASSWORD_U } = req.body;
       let user = getRepository(User);
 
-      const loginAuthentication = await user.findOne({
+      const loginAuthentication = await user.find({
         where: {
-          EMAIL,
-          PASSWORD_U
-        }
+          USERNAME: USERNAME,
+          PASSWORD_U: PASSWORD_U,
+        },
       });
 
-      if (loginAuthentication)
+      console.log(loginAuthentication);
+
+      if (loginAuthentication[0])
         return res.status(200).json({
           error: false,
           msg: "Login efetuado com sucesso!",
           dados: loginAuthentication,
         });
-      else if (!loginAuthentication)
+      else if (loginAuthentication)
         return res.status(404).json({
           error: true,
           msg: "Falha ao efetuar o login!",
