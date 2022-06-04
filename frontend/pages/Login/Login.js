@@ -69,7 +69,7 @@ const Login = ({ navigation }) => {
       console.log(user.username);
       
       Keyboard.dismiss();
-      return setTimeout(() => navigation.navigate("Home"), 2000);
+      return setTimeout(() => navigation.navigate("Game"), 2000);
     } catch ({ ...err }) {
       if (USERNAME === '' || EMAIL === '' || PASSWORD_U === '') {
         setStatus({
