@@ -22,19 +22,21 @@ module.exports = new EntitySchema({
     },
     USERNAME: {
       type: "varchar",
-      nullable: false
+      nullable: false,
+      update: true
     },
     EMAIL: {
       type: "varchar",
-      nullable: false
+      nullable: false,
     },
     PASSWORD_U: {
       type: "varchar",
-      nullable: false
+      nullable: false,
+      update: true
     },
     TYPE_U: {
       type: "boolean",
-      nullable: true
+      nullable: true,
     },
   },
 });

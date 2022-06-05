@@ -8,6 +8,7 @@ import SignUp from '../pages/Sign-up/Sign-up';
 import Home from '../pages/Home/Home';
 import Game from '../pages/Game/Game';
 import Sheet from '../pages/Sheet/Sheet';
+import UserPage from '../pages/UserSettings/UserPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ const Routes = () => {
         <Stack.Screen name="Game" component={Game} options={{headerShown: false}}/>
         <Stack.Screen name="Sheet" component={Sheet} options={{headerShown: false}}/>
         <Stack.Screen name="Home" component={Home} options={{headerShown: false}}/>
+        <Stack.Screen name="UserPage" component={UserPage} options={{headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

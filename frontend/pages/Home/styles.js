@@ -95,3 +95,12 @@ export const GameButtonText = styled.Text `
   font-size: 18px;
   font-weight: bold;
 `;
+
+export const UserButton = styled.TouchableOpacity `
+  padding-right: 15px;
+  background-color: transparent;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  height: auto;
+`;

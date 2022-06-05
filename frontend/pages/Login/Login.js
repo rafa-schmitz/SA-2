@@ -52,7 +52,7 @@ const Login = ({ navigation }) => {
 
       setStatus({
         type: "success",
-        msg: "Success! Redirecting you to Home...",
+        msg: "Login feito com sucesso!",
       });
 
       setUsername("");
@@ -61,6 +61,7 @@ const Login = ({ navigation }) => {
       setUser({
         id: signIn.data.dados[0].IDUSER,
         username: signIn.data.dados[0].USERNAME,
+        password: signIn.data.dados[0].PASSWORD_U,
         email: signIn.data.dados[0].EMAIL,
         user_type: signIn.data.dados[0].TYPE_U,
       });

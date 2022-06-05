@@ -5,13 +5,11 @@ const { getRepository } = require("typeorm");
 module.exports = {
   async postUser(req, res) {
     const schema = Yup.object().shape({
-      USERNAME: Yup.string()
-        .required("Um usuário é necessário!"),
+      USERNAME: Yup.string().required("Um usuário é necessário!"),
       EMAIL: Yup.string()
         .required("Um endereço de e-mail é necessário!")
         .email("Insira um e-mail válido!"),
-      PASSWORD_U: Yup.string()
-        .required("Uma senha é necessária!")
+      PASSWORD_U: Yup.string().required("Uma senha é necessária!"),
     });
 
     try {
@@ -23,20 +21,20 @@ module.exports = {
       const userValidation = await user.find({
         where: [{ USERNAME: USERNAME }],
       });
-      
+
       const emailValidation = await user.find({
         where: [{ EMAIL: EMAIL }],
       });
 
       if (userValidation[0]) {
         return res.status(400).json({
-          message: "Este usuário já pertence à uma conta!"
+          message: "Este usuário já pertence à uma conta!",
         });
       }
 
       if (emailValidation[0]) {
         return res.status(400).json({
-          message: "Este email já possui uma conta!"
+          message: "Este email já possui uma conta!",
         });
       }
 
@@ -52,7 +50,7 @@ module.exports = {
       });
     } catch (err) {
       return res.status(400).json({
-        err
+        err,
       });
     }
   },
@@ -78,7 +76,7 @@ module.exports = {
       USERNAME: Yup.string().required("Preencha o campo de usuário!"),
       PASSWORD_U: Yup.string().required("Preencha o campo de senha!"),
     });
-    
+
     try {
       await schema.validate(req.body);
 
@@ -100,11 +98,38 @@ module.exports = {
         });
       else if (loginAuthentication)
         return res.status(404).json({
-          err
+          err,
         });
     } catch (err) {
       return res.status(400).json({
-        err
+        err,
+      });
+    }
+  },
+  async alterUsername(req, res) {
+    try {
+      const { IDUSER } = req.params;
+      let user = getRepository(User);
+
+      const userValidation = await user.find({
+        where: {
+          IDUSER: IDUSER,
+        },
+      });
+
+      if (userValidation[0]) {
+        const response = await user.update(userValidation, (req.body));
+        return res.status(200).json({
+          dados: response,
+        });
+      } else return res.status(400).json({
+        error: 'Usuário não encontrado'
+      });
+
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        err,
       });
     }
   },
