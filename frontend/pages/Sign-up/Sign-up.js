@@ -75,15 +75,18 @@ const SignUp = ({ navigation }) => {
       setLoading(false);
       return setTimeout(() => navigation.navigate("Login"), 3000);
     } catch (err) {
-      if (USERNAME === "" || EMAIL === "" || PASSWORD_U === "") {
+      let emptyInputsError = err?.response?.data?.err?.message;
+      let userOrEmailError =  err?.response?.data?.message;
+
+      if (emptyInputsError) {
         setStatus({
           type: "error",
-          msg: "Você precisa preencher todos os campos!",
+          msg: emptyInputsError,
         });
       } else {
         setStatus({
           type: "error",
-          msg: "Erro! Usuário ou e-mail já cadastrados",
+          msg: userOrEmailError,
         });
       }
     }

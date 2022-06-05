@@ -10,7 +10,6 @@ import {
   StyledContainer,
   InnerContainer,
   PageTitle,
-  PageBackground,
   Subtitle,
   StyledFormContainer,
   LeftIcon,
@@ -65,21 +64,27 @@ const Login = ({ navigation }) => {
         email: signIn.data.dados[0].EMAIL,
         user_type: signIn.data.dados[0].TYPE_U,
       });
-
-      console.log(user.username);
       
       Keyboard.dismiss();
-      return setTimeout(() => navigation.navigate("Game"), 2000);
-    } catch ({ ...err }) {
-      if (USERNAME === '' || EMAIL === '' || PASSWORD_U === '') {
+      return setTimeout(() => {
+        navigation.navigate("Home");
+        setStatus({
+          type: "clear",
+          msg: "",
+        });
+      }, 1500);
+    } catch (err) {
+      let errorMessage = err.response.data.err.message;
+
+      if (errorMessage) {
         setStatus({
           type: "error",
-          msg: "Você precisa preencher todos os campos!",
+          msg: errorMessage,
         });
       } else {
         setStatus({
           type: "error",
-          msg: "Erro! Usuário ou e-mail já cadastrados",
+          msg: "Usuário ou senha incorretos!",
         });
       }
     }
@@ -90,22 +95,19 @@ const Login = ({ navigation }) => {
       <StatusBar barStyle="dark" />
         <InnerContainer>
           <PageTitle>D&D Sheets App</PageTitle>
-          <Subtitle>Access your account</Subtitle>
+          <Subtitle>Acessar sua conta</Subtitle>
 
           <Formik
             initialValues={{
               email: "",
               password: "",
             }}
-            onSubmit={(values) => {
-              console.log(values);
-            }}
           >
             {({ handleBlur }) => (
               <StyledFormContainer>
                 <TextInput
                   label="Usuário"
-                  icon="envelope"
+                  icon="user"
                   placeholder="your-email@gmail.com"
                   placeholderTextColor="#5E5E5E"
                   onChangeText={(e) => setUsername(e)}

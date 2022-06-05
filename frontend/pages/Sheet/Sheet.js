@@ -147,7 +147,7 @@ const Sheet = ({ route, navigation }) => {
         <ScrollView>
           <RowPic>
         <ReturnButton >
-          <Icon name="arrowleft" size={30} onPress={() => navigation.navigate("Game")}></Icon>
+          <Icon name="arrowleft" size={30} onPress={() => navigation.navigate("Home")}></Icon>
         </ReturnButton> 
             <ProfileImage>
               <FirstLetterName>{FirstLetter}</FirstLetterName>
