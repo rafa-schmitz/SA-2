@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { StatusBar } from "react-native";
 import { useUserContext } from "../../context/context";
@@ -14,19 +14,27 @@ import {
   SheetButton,
   SheetButtonText,
   GameButton,
-  GameButtonText
+  GameButtonText,
+  UserButton
 } from "./styles";
 
 const Home = ({ navigation }) => {
   const { user } = useUserContext();
+  const [username, setUsername] = useState();
+
+  useEffect(() => {
+    setUsername(user.username)
+  }, [user]);
 
   return (
     <StyledContainer>
       <StatusBar barStyle="dark" />
         <InnerContainer>
           <TitleContainer>
-            <PageTitle>Olá, <Username>{user.username}</Username>!</PageTitle>
-              <Icon style={{alignSelf: "center"}} name={"user"} size={30} color="#2C877E" />
+            <PageTitle>Olá, <Username>{username}</Username>!</PageTitle>
+            <UserButton>
+              <Icon onPress={() => navigation.navigate("UserPage")} style={{alignSelf: "center"}} name={"user"} size={30} color="#2C877E" />
+            </UserButton>
           </TitleContainer>
           <Line />
 
