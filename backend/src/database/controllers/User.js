@@ -6,12 +6,12 @@ module.exports = {
   async postUser(req, res) {
     const schema = Yup.object().shape({
       USERNAME: Yup.string()
-        .required("A username is required!"),
+        .required("Um usuário é necessário!"),
       EMAIL: Yup.string()
-        .required("An e-mail address is required!")
-        .email("Please enter a valid e-mail"),
+        .required("Um endereço de e-mail é necessário!")
+        .email("Insira um e-mail válido!"),
       PASSWORD_U: Yup.string()
-        .required("A password is required!")
+        .required("Uma senha é necessária!")
     });
 
     try {
@@ -21,15 +21,22 @@ module.exports = {
       let user = getRepository(User);
 
       const userValidation = await user.find({
-        where: [{ USERNAME: USERNAME }, { EMAIL: EMAIL }],
+        where: [{ USERNAME: USERNAME }],
       });
-
-      console.log(userValidation);
+      
+      const emailValidation = await user.find({
+        where: [{ EMAIL: EMAIL }],
+      });
 
       if (userValidation[0]) {
         return res.status(400).json({
-          error: true,
-          msg: res.err,
+          message: "Este usuário já pertence à uma conta!"
+        });
+      }
+
+      if (emailValidation[0]) {
+        return res.status(400).json({
+          message: "Este email já possui uma conta!"
         });
       }
 
@@ -45,7 +52,7 @@ module.exports = {
       });
     } catch (err) {
       return res.status(400).json({
-        error: {msg: "Este usuário e/ou email já existe"},
+        err
       });
     }
   },
@@ -68,9 +75,10 @@ module.exports = {
 
   async userLogin(req, res) {
     const schema = Yup.object().shape({
-      USERNAME: Yup.string().required("A username is required!"),
-      PASSWORD_U: Yup.string().required("A password is required!"),
+      USERNAME: Yup.string().required("Preencha o campo de usuário!"),
+      PASSWORD_U: Yup.string().required("Preencha o campo de senha!"),
     });
+    
     try {
       await schema.validate(req.body);
 
@@ -84,8 +92,6 @@ module.exports = {
         },
       });
 
-      console.log(loginAuthentication);
-
       if (loginAuthentication[0])
         return res.status(200).json({
           error: false,
@@ -94,14 +100,11 @@ module.exports = {
         });
       else if (loginAuthentication)
         return res.status(404).json({
-          error: true,
-          msg: "Falha ao efetuar o login!",
+          err
         });
-    } catch ({ ...err }) {
-      console.log(err);
+    } catch (err) {
       return res.status(400).json({
-        error: true,
-        msg: err,
+        err
       });
     }
   },

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { StatusBar } from "react-native";
 import { useUserContext } from "../../context/context";
 
@@ -6,27 +7,38 @@ import {
   StyledContainer,
   InnerContainer,
   PageTitle,
-  PageBackground,
-  Subtitle,
-  LeftIcon,
-  StyledInputLabel,
-  StyledTextInput,
-  RightIcon,
+  TitleContainer,
+  Username,
+  Line,
+  MainText,
+  SheetButton,
+  SheetButtonText,
+  GameButton,
+  GameButtonText
 } from "./styles";
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const { user } = useUserContext();
-
-  useEffect(()=> {
-    console.log(user);
-  }, [])
 
   return (
     <StyledContainer>
       <StatusBar barStyle="dark" />
         <InnerContainer>
-          <PageTitle>Olá, {user.username}!</PageTitle>
-          <Subtitle>doidera</Subtitle>
+          <TitleContainer>
+            <PageTitle>Olá, <Username>{user.username}</Username>!</PageTitle>
+              <Icon style={{alignSelf: "center"}} name={"user"} size={30} color="#2C877E" />
+          </TitleContainer>
+          <Line />
+
+          <MainText>O que você deseja fazer?</MainText>
+
+          <SheetButton onPress={() => navigation.navigate("Sheet")}>
+            <SheetButtonText>Acessar minha ficha!</SheetButtonText>
+          </SheetButton>
+
+          <GameButton onPress={() => navigation.navigate("Game")}>
+            <GameButtonText>Ir para área de jogos!</GameButtonText>
+          </GameButton>
         </InnerContainer>
     </StyledContainer>
   );
