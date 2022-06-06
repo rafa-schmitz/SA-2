@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, FlatList } from "react-native";
 import api from "../../services/Api";
 import Icon from "react-native-vector-icons/AntDesign";
+import { useUserContext } from "../../context/context";
 
 import {
   Container,
@@ -30,10 +31,13 @@ import {
 } from "./styles";
 
 const Sheet = ({ route, navigation }) => {
+  const {user} = useUserContext();
   const itemId = route?.params;
   const [sheet, setSheet] = useState();
-  const [user, setUser] = useState();
-  const FirstLetter = user?.USERNAME.charAt(0);
+
+  const [inventory,setInventory] = useState();
+  const [spell,setSpell] = useState();
+  const FirstLetter = user.username.charAt(0);
 
   const [CHARACTERNAME, SETCHARACTERNAME] = useState()
   const [SPELLNAME, SETSPELLNAME] = useState();
@@ -52,30 +56,16 @@ const Sheet = ({ route, navigation }) => {
   const [RACE, SETRACE] = useState();
   const [STR, SETSTR] = useState();
   const [WIS, SETWIS] = useState();
+  
 
-  const getUser = async () => {
-    await api.get(`/user`).then((res) => {
-      const api = res.data?.dados?.map( users => {
-        if( users.IDUSER == itemId?.userId ){ 
-          return users 
-        }});
-      const apiFiltered = api?.filter(arrayUsers => {
-        return arrayUsers != undefined
-      })
-        setUser(apiFiltered[0]);
-    });
-  };
-
-  useEffect(()=>{
-    getUser()
-  },[itemId])
 
   const getSheet = async () => {
-    await api.get(`/Sheet/${user?.IDUSER}`).then((res) => {
+    await api.get(`/Sheet/${user.id}`).then((res) => {
       const api = res.data;
       setSheet(api);
     });
   };
+
 
   useEffect(() => {
     getSheet();
@@ -89,21 +79,22 @@ const Sheet = ({ route, navigation }) => {
   });
 
   const putSpell = async () => {
-    await api.put(`/Spell/${user?.IDUSER}`, {
+    await api.put(`/Spell/${user.id}`, {
       SPELLDESCRIPTION,
       SPELLNAME,
     });
   };
 
   const putItem = async () => {
-    await api.put(`/Inventory/${user?.IDUSER}`, {
-      ITEM,
-      ITEMDESCRIPTION,
+
+      api.put(`/Inventory/${user.id}`, {
+        ITEM,
+        ITEMDESCRIPTION,
     });
   };
 
   const upSheet = async () => {
-    await api.put(`/Sheet/${user?.IDUSER}`, {
+    await api.put(`/Sheet/${user.id}`, {
       CHARACTERNAME,
       ARMORCLASS,
       CHA,
@@ -117,7 +108,9 @@ const Sheet = ({ route, navigation }) => {
       RACE,
       STR,
       WIS
+      
     });
+    
   };
 
 
@@ -154,7 +147,7 @@ const Sheet = ({ route, navigation }) => {
             </ProfileImage>
           </RowPic>
           <RowName>
-            <UserName>{user?.USERNAME}</UserName>
+            <UserName>{user.username}</UserName>
             <CharName>{charName?.[0]}</CharName>
             <Level>Lvl: {charLvl?.[0]}</Level>
           </RowName>
@@ -186,7 +179,7 @@ const Sheet = ({ route, navigation }) => {
             <StatsCont>
               <StatsTitle>Raça:</StatsTitle>
               <InputStats
-                keyboardType="numeric"
+              
                 value={RACE?.toString()}
                 onChangeText={(e) => SETRACE(e)}
               ></InputStats>
@@ -200,46 +193,15 @@ const Sheet = ({ route, navigation }) => {
               ></InputStats>
             </StatsCont>
             <StatsCont>
-              <StatsTitle>Carisma: </StatsTitle>
+              <StatsTitle>Classe: </StatsTitle>
               <InputStats
-                keyboardType="numeric"
-                value={CHA?.toString()}
-                onChangeText={(e) => SETCHA(e)}
-              ></InputStats>
-            </StatsCont>
-            <StatsCont>
-              <StatsTitle>Classe:</StatsTitle>
-              <InputStats
+                
                 value={CLASS?.toString()}
                 onChangeText={(e) => SETCLASS(e)}
               ></InputStats>
             </StatsCont>
             <StatsCont>
-              <StatsTitle>Dex:</StatsTitle>
-              <InputStats
-                keyboardType="numeric"
-                value={DEX?.toString()}
-                onChangeText={(e) => SETDEX(e)}
-              ></InputStats>
-            </StatsCont>
-            <StatsCont>
-              <StatsTitle>End:</StatsTitle>
-              <InputStats
-                keyboardType="numeric"
-                value={ENDU?.toString()}
-                onChangeText={(e) => SETENDU(e)}
-              ></InputStats>
-            </StatsCont>
-            <StatsCont>
-              <StatsTitle>Int:</StatsTitle>
-              <InputStats
-                keyboardType="numeric"
-                value={INTE?.toString()}
-                onChangeText={(e) => SETINTE(e)}
-              ></InputStats>
-            </StatsCont>
-            <StatsCont>
-              <StatsTitle>Move Speed:</StatsTitle>
+              <StatsTitle>Movimento:</StatsTitle>
               <InputStats
                 keyboardType="numeric"
                 value={MOVESPEED?.toString()}
@@ -247,7 +209,39 @@ const Sheet = ({ route, navigation }) => {
               ></InputStats>
             </StatsCont>
             <StatsCont>
-              <StatsTitle>Str:</StatsTitle>
+              <StatsTitle>DEX:</StatsTitle>
+              <InputStats
+                keyboardType="numeric"
+                value={DEX?.toString()}
+                onChangeText={(e) => SETDEX(e)}
+              ></InputStats>
+            </StatsCont>
+            <StatsCont>
+              <StatsTitle>END:</StatsTitle>
+              <InputStats
+                keyboardType="numeric"
+                value={ENDU?.toString()}
+                onChangeText={(e) => SETENDU(e)}
+              ></InputStats>
+            </StatsCont>
+            <StatsCont>
+              <StatsTitle>INT:</StatsTitle>
+              <InputStats
+                keyboardType="numeric"
+                value={INTE?.toString()}
+                onChangeText={(e) => SETINTE(e)}
+              ></InputStats>
+            </StatsCont>
+            <StatsCont>
+              <StatsTitle>CHA:</StatsTitle>
+              <InputStats
+                keyboardType="numeric"
+                value={CHA?.toString()}
+                onChangeText={(e) => SETCHA(e)}
+              ></InputStats>
+            </StatsCont>
+            <StatsCont>
+              <StatsTitle>STR:</StatsTitle>
               <InputStats
                 keyboardType="numeric"
                 value={STR?.toString()}
@@ -255,7 +249,7 @@ const Sheet = ({ route, navigation }) => {
               ></InputStats>
             </StatsCont>
             <StatsCont>
-              <StatsTitle>Wis:</StatsTitle>
+              <StatsTitle>WIS:</StatsTitle>
               <InputStats
                 keyboardType="numeric"
                 value={WIS?.toString()}
@@ -287,7 +281,7 @@ const Sheet = ({ route, navigation }) => {
             </RowButton>
           </ContainerStats>
           <ContainerSpells>
-            <TitleInventario>Spells</TitleInventario>
+            <TitleInventario>Feitiços</TitleInventario>
             <InputItem>
               <InputTeste
                 value={SPELLNAME?.toString()}

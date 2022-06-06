@@ -95,7 +95,7 @@ const Login = ({ navigation }) => {
     <StyledContainer>
       <StatusBar barStyle="dark" />
         <InnerContainer>
-          <PageTitle>D&D Sheets App</PageTitle>
+          <PageTitle>D&D Companion</PageTitle>
           <Subtitle>Acessar sua conta</Subtitle>
 
           <Formik

@@ -60,6 +60,32 @@ const SignUp = ({ navigation }) => {
         PASSWORD_U,
         TYPE_U,
       });
+      const sheetP = await api.post('/Sheet/',{
+        CHARACTERNAME:"-",
+        ARMORCLASS:10,
+        CHA:10,
+        CLASS:"-",
+        DEX:10,
+        ENDU:10,
+        EXP:0,
+        INTE:10,
+        LEVEL_C:1,
+        MOVESPEED:9,
+        RACE:"-",
+        STR:10,
+        WIS:10
+      });
+      
+
+      const inventoryP = await api.post('/Inventory/',{
+        ITEM:"-",
+        ITEMDESCRIPTION:"-",
+      });
+
+      const spellP = await api.post('/Spell/',{
+        SPELLNAME:"-",
+        SPELLDESCRIPTION:"-",
+      })
 
       setStatus({
         type: "success",
@@ -96,7 +122,7 @@ const SignUp = ({ navigation }) => {
     <StyledContainer>
       <StatusBar barStyle="dark" />
       <InnerContainer>
-        <PageTitle>D&D Sheets App</PageTitle>
+        <PageTitle>D&D Companion</PageTitle>
         <Subtitle>Create your account</Subtitle>
 
         <Formik
