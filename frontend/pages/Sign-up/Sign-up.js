@@ -9,7 +9,6 @@ import {
   StyledContainer,
   InnerContainer,
   PageTitle,
-  PageBackground,
   Subtitle,
   StyledFormContainer,
   LeftIcon,
@@ -22,7 +21,6 @@ import {
   Line,
   SignUpView,
   SignUpText,
-  SignUpRedirect,
   SignUpLink,
 } from "./styles";
 

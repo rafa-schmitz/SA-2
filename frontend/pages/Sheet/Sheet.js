@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, FlatList } from "react-native";
+import { ScrollView, Alert, View } from "react-native";
 import api from "../../services/Api";
 import Icon from "react-native-vector-icons/AntDesign";
 import { useUserContext } from "../../context/context";
@@ -27,19 +27,19 @@ import {
   InputStats,
   StatsCont,
   ContainerSpells,
-  ReturnButton
+  ButtonsRow,
 } from "./styles";
 
 const Sheet = ({ route, navigation }) => {
-  const {user} = useUserContext();
+  const { user } = useUserContext();
   const itemId = route?.params;
   const [sheet, setSheet] = useState();
 
-  const [inventory,setInventory] = useState();
-  const [spell,setSpell] = useState();
+  const [inventory, setInventory] = useState();
+  const [spell, setSpell] = useState();
   const FirstLetter = user.username.charAt(0);
 
-  const [CHARACTERNAME, SETCHARACTERNAME] = useState()
+  const [CHARACTERNAME, SETCHARACTERNAME] = useState();
   const [SPELLNAME, SETSPELLNAME] = useState();
   const [SPELLDESCRIPTION, SETSPELLDESCRIPTION] = useState();
   const [ITEM, setITEM] = useState();
@@ -56,8 +56,61 @@ const Sheet = ({ route, navigation }) => {
   const [RACE, SETRACE] = useState();
   const [STR, SETSTR] = useState();
   const [WIS, SETWIS] = useState();
-  
 
+  const deleteSheetAlert = () =>
+    Alert.alert("Deletar ficha", "Você deseja deletar sua ficha?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => {clearSheet(); clearInventory(); clearSpells(); }},
+    ]);
+
+  const clearSheet = async () => {
+    try {
+      await api.put(`/Sheet/${user.id}`, {
+        CHARACTERNAME: "-",
+        ARMORCLASS: 10,
+        CHA: 10,
+        CLASS: "-",
+        DEX: 10,
+        ENDU: 10,
+        EXP: 0,
+        INTE: 10,
+        LEVEL_C: 1,
+        MOVESPEED: 9,
+        RACE: "-",
+        STR: 10,
+        WIS: 10,
+      });
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const clearInventory = async () => {
+    try {
+      await api.put(`/Inventory/${user.id}`, {
+        ITEM: "-",
+        ITEMDESCRIPTION: "-",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const clearSpells = async () => {
+    test;
+    try {
+      await api.put(`/Spell/${user.id}`, {
+        SPELLNAME: "",
+        SPELLDESCRIPTION: "",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const getSheet = async () => {
     await api.get(`/Sheet/${user.id}`).then((res) => {
@@ -65,7 +118,6 @@ const Sheet = ({ route, navigation }) => {
       setSheet(api);
     });
   };
-
 
   useEffect(() => {
     getSheet();
@@ -86,10 +138,9 @@ const Sheet = ({ route, navigation }) => {
   };
 
   const putItem = async () => {
-
-      api.put(`/Inventory/${user.id}`, {
-        ITEM,
-        ITEMDESCRIPTION,
+    api.put(`/Inventory/${user.id}`, {
+      ITEM,
+      ITEMDESCRIPTION,
     });
   };
 
@@ -107,19 +158,16 @@ const Sheet = ({ route, navigation }) => {
       MOVESPEED,
       RACE,
       STR,
-      WIS
-      
+      WIS,
     });
-    
   };
 
-
   useEffect(() => {
-    SETCHARACTERNAME(sheet?.spellC[0]?.CHARACTERNAME)
-    SETSPELLNAME(sheet?.spellC[0]?.SPELLNAME)
-    SETSPELLDESCRIPTION(sheet?.spellC[0]?.SPELLDESCRIPTION)
-    setITEM(sheet?.inv[0]?.ITEM)
-    setITEMDESCRIPTION(sheet?.inv[0]?.ITEMDESCRIPTION)
+    SETCHARACTERNAME(sheet?.spellC[0]?.CHARACTERNAME);
+    SETSPELLNAME(sheet?.spellC[0]?.SPELLNAME);
+    SETSPELLDESCRIPTION(sheet?.spellC[0]?.SPELLDESCRIPTION);
+    setITEM(sheet?.inv[0]?.ITEM);
+    setITEMDESCRIPTION(sheet?.inv[0]?.ITEMDESCRIPTION);
     SETARMORCLASS(sheet?.sheetB[0]?.ARMORCLASS);
     SETCHA(sheet?.sheetB[0]?.CHA);
     SETCLASS(sheet?.sheetB[0]?.CLASS);
@@ -138,10 +186,23 @@ const Sheet = ({ route, navigation }) => {
     <>
       <Container>
         <ScrollView>
+          <ButtonsRow>
+            <Icon
+              name="arrowleft"
+              size={30}
+              color={"#2C877E"}
+              onPress={() => navigation.navigate("Home")}
+            ></Icon>
+
+            <Icon
+              name="delete"
+              size={30}
+              color={"#2C877E"}
+              onPress={deleteSheetAlert}
+            ></Icon>
+          </ButtonsRow>
+
           <RowPic>
-        <ReturnButton >
-          <Icon name="arrowleft" size={30} onPress={() => navigation.navigate("Home")}></Icon>
-        </ReturnButton> 
             <ProfileImage>
               <FirstLetterName>{FirstLetter}</FirstLetterName>
             </ProfileImage>
@@ -179,7 +240,6 @@ const Sheet = ({ route, navigation }) => {
             <StatsCont>
               <StatsTitle>Raça:</StatsTitle>
               <InputStats
-              
                 value={RACE?.toString()}
                 onChangeText={(e) => SETRACE(e)}
               ></InputStats>
@@ -195,7 +255,6 @@ const Sheet = ({ route, navigation }) => {
             <StatsCont>
               <StatsTitle>Classe: </StatsTitle>
               <InputStats
-                
                 value={CLASS?.toString()}
                 onChangeText={(e) => SETCLASS(e)}
               ></InputStats>
