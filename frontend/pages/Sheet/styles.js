@@ -13,6 +13,14 @@ export const RowPic = styled.View`
   background-color: #333333;
 `;
 
+export const ButtonsRow = styled.View `
+  padding: 10px 10px 0 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 40px;
+  background-color: #333333;
+`;
+
 export const ProfileImage = styled.View`
   width: 130px;
   height: 130px;
@@ -162,7 +170,7 @@ export const TextButtom = styled.Text`
 export const InputStats = styled.TextInput`
   width: auto;
   height: auto;
-  color: #fff
+  color: #fff;
   margin-top: 2px;
 `;
 

@@ -23,6 +23,14 @@ export const ProfileImage = styled.View`
   align-items: center;
 `;
 
+export const ButtonsRow = styled.View `
+  padding: 10px 10px 0 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 40px;
+  background-color: #333333;
+`;
+
 export const FirstLetterName = styled.Text`
   color: #fff;
   font-size: 50px;

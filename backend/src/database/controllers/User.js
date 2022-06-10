@@ -133,4 +133,33 @@ module.exports = {
       });
     }
   },
+  async deleteUserAccount(req, res) {
+    try {
+      const { IDUSER } = req.params;
+      let user = getRepository(User);
+
+      const userValidation = await user.find({
+        where: {
+          IDUSER: IDUSER
+        }
+      });
+
+      if (userValidation[0]) {
+        const response = await user.delete(userValidation, (req.body));
+        return res.status(200).json({
+          error: false,
+          msg: "Sua conta foi deletada. Você será redirecionado ao cadastro...",
+          dados: userValidation
+        });
+      } else return res.status(400).json({
+        error: true,
+        msg: "Falha ao deletar sua conta. Tente novamente!",
+        dados: userValidation
+      })
+    } catch (err) {
+      return res.status(400).json({
+        err
+      })
+    }
+  }
 };
