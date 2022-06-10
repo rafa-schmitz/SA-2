@@ -17,5 +17,6 @@ routes.put("/Sheet/:IDUSER", sheetController.putSheet);
 routes.put("/Inventory/:IDUSER", sheetController.putInv);
 routes.put("/Spell/:IDUSER", sheetController.putSpell);
 routes.delete("/Sheet/:IDUSER", sheetController.deleteSheet);
+routes.delete("/userDelete/:IDUSER", userController.deleteUserAccount);
 
 module.exports = routes;

@@ -17,10 +17,8 @@ import {
   TitleStats,
   StatsTitle,
   TitleInventario,
-  TitleItem,
   InputItem,
   InputTeste,
-  Line,
   RowButton,
   Update,
   TextButtom,
@@ -63,7 +61,14 @@ const Sheet = ({ route, navigation }) => {
         text: "Cancelar",
         style: "cancel",
       },
-      { text: "OK", onPress: () => {clearSheet(); clearInventory(); clearSpells(); }},
+      {
+        text: "OK",
+        onPress: () => {
+          clearSheet();
+          clearInventory();
+          clearSpells();
+        },
+      },
     ]);
 
   const clearSheet = async () => {
@@ -83,7 +88,6 @@ const Sheet = ({ route, navigation }) => {
         STR: 10,
         WIS: 10,
       });
-
     } catch (err) {
       console.log(err);
     }
@@ -98,7 +102,7 @@ const Sheet = ({ route, navigation }) => {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const clearSpells = async () => {
     test;
@@ -110,7 +114,7 @@ const Sheet = ({ route, navigation }) => {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const getSheet = async () => {
     await api.get(`/Sheet/${user.id}`).then((res) => {
